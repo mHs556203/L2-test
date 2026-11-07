@@ -337,8 +337,11 @@ const NEXTCLS = { raider: 'destroyer', monk: 'tyrant' }, NEXTCLS3 = { destroyer:
  gladiator: 'duelist', warlord: 'dreadnought', paladin: 'phoenixknight', darkavenger: 'hellknight', shillienknight: 'shillientemplar', bladedancer: 'spectraldancer', abysswalker: 'ghosthunter', phantomranger: 'ghostsentinel',
  templeknight: 'evastemplar', swordsinger: 'swordmuse', plainswalker: 'windrider', silverranger: 'moonlightsentinel', sorcerer: 'archmage', necromancer: 'soultaker', warlock: 'arcanalord', bishop: 'cardinal', spellsinger: 'mysticmuse', esummoner: 'elementalmaster', eelder: 'evassaint', spellhowler: 'stormscreamer', psummoner: 'spectralmaster', selder: 'shilliensaint' };
 const NEXTCLS1 = {};
+// 8 Nov: which tier a class is, for the trial locks (the old lock listed only Orc classes, so every other race stayed on 'needs Trial 1')
+const TIER2 = Object.keys(NEXTCLS3), TIER3 = Object.values(NEXTCLS3);
 const PICK1 = { hfighter: 'human1', dfighter: 'delf1', efighter: 'efighter1', hmystic: 'hmystic1', emystic: 'emystic1', dmystic: 'dmystic1' }, PICK2 = { rogue: 'human2', warrior: 'warrior2', hknight: 'knight2', palusknight: 'palus2', assassin: 'assassin2', fighter: null,
   eknight: 'eknight2', escout: 'escout2', hwizard: 'hwizard2', cleric: 'cleric2', ewizard: 'ewizard2', eoracle: 'eoracle2', dwizard: 'dwizard2', soracle: 'soracle2' };   // 7 Nov (late night): mystic lines
+const TIER1 = [...Object.keys(PICK2).filter(k => PICK2[k]), ...Object.keys(NEXTCLS)];   // 8 Nov: first-class jobs (Trial 2 opens for these)
 const RACEN = { orc: 'Orc', human_f: 'Human', human_m: 'Human', delf_f: 'Dark Elf', delf_m: 'Dark Elf', elf_f: 'Elf', elf_m: 'Elf', hmage_f: 'Human', hmage_m: 'Human', elfm_f: 'Elf', elfm_m: 'Elf', dmage_f: 'Dark Elf', dmage_m: 'Dark Elf' };
 const raceOf = () => S.race || 'orc';
 const isHuman = () => raceOf() !== 'orc';   // (name kept) any non-Orc race: own model, own class line
@@ -471,7 +474,7 @@ function render() {
    <div><b>${a.name}</b>${S.best[a.id] ? ` <small style="color:var(--dim)">· best ${S.best[a.id]} kills</small>` : ''}<div class="band"><b style="left:${left}%;width:${w}%"></b><u style="left:${(S.lv - 1) / L * 100}%"></u></div></div>
    <span style="text-align:center;color:var(--dim)">${a.band[0]}–${a.band[1]}</span><span class="tag ${tag.startsWith('◀') ? 'you' : tag.startsWith('✓') ? 'ok' : ''}">${tag}</span></div>`; }).join('');
  document.querySelectorAll('.area').forEach(el => el.onclick = () => { const a = AREAS[el.dataset.id - 1]; if (unlocked(a)) { S.sel = a.id; save(); render(); } });
- $('trials').innerHTML = TRIALS.map((t, i) => { const has = S.tokens.includes(i), needCls = (i === 1 && !['raider', 'monk', 'destroyer', 'tyrant', 'titan', 'grandkhavatari'].includes(clsOf())) || (i === 2 && !['destroyer', 'tyrant', 'titan', 'grandkhavatari'].includes(clsOf())), can = S.lv >= t.lv && !needCls;
+ $('trials').innerHTML = TRIALS.map((t, i) => { const has = S.tokens.includes(i), needCls = (i === 1 && !(TIER1.includes(clsOf()) || TIER2.includes(clsOf()) || TIER3.includes(clsOf()))) || (i === 2 && !(TIER2.includes(clsOf()) || TIER3.includes(clsOf()))), can = S.lv >= t.lv && !needCls;
   return `<div class="trial"><span>⚔ <b>${t.name}</b> <span style="color:var(--dim)">Lv ${t.lv} · ${trialTo(TRIALS.indexOf(t))}</span></span>${!t.page ? '<span style="color:var(--lock)">🔒 not built</span>' : has ? `<span><span style="color:var(--ok)">✓ token</span> <button class="btn ghost" style="padding:4px 10px" data-t="${i}">Fight again</button></span>` : can ? `<button class="btn" data-t="${i}">Enter trial</button>` : `<span style="color:var(--lock)">🔒 ${S.lv >= t.lv && needCls ? (i === 2 ? 'needs Trial 2' : 'needs Trial 1') : 'Lv ' + t.lv}</span>`}</div>`; }).join('');
  $('trials').querySelectorAll('[data-t]').forEach(b => b.onclick = () => openTrial(+b.dataset.t));
  const a = AREAS[S.sel - 1], mob = mobRange(a);
