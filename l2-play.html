@@ -320,6 +320,8 @@ body.v4on #toast2{z-index:40}
 #lobby.v4l #linfow{left:1544px!important;right:auto!important;top:104px!important;width:226px!important}
 #lobby.v4l #linfow .lwt{display:none}#lobby.v4l #linfo{font:15px Georgia,serif;padding:0}#lobby.v4l #linfo .lg{border:0;border-image:none;padding:0}#lobby.v4l #linfo .kv span{color:#f2cf86}
 #lobby.v4l #linfo .sec{color:transparent;height:38px;margin:2px 0}
+#lobby .stage.l2v-on{background-image:none!important}   /* 10 Nov: the 3D character replaces the flat picture */
+#lobby.v4l .lrot{position:absolute;top:670px;width:40px;height:40px;border-radius:50%;border:1px solid var(--metal-b,#a3a3ad);background:radial-gradient(circle at 50% 35%,rgba(60,50,40,.9),rgba(10,8,8,.92));color:#f2cf86;font-size:14px;cursor:pointer;z-index:3;box-shadow:0 0 10px rgba(0,0,0,.7)}#lobby.v4l .lrot:hover{color:#fff0c4;box-shadow:0 0 12px var(--glow,rgba(255,200,120,.5))}#lobby.v4l #lrotl{left:665px}#lobby.v4l #lrotr{left:1065px}#lobby.v4l #lv_sel[hidden] ~ .lrot,#lobby.v4l .lrot[hidden]{display:none}
 #lobby.v4l #lstage_s{left:885px;bottom:auto;top:150px;height:580px;aspect-ratio:400/660;filter:brightness(1.15) drop-shadow(0 0 18px rgba(255,235,200,.25)) drop-shadow(0 10px 14px rgba(0,0,0,.7))}
 #lobby.v4l #lplate_s{left:908px;top:122px;font:900 40px Cinzel,Georgia,serif;letter-spacing:3px;color:#f2cf86;text-shadow:0 2px 3px #000}#lobby.v4l #lplate_s small{font:16px Georgia,serif;color:#f2cf86;letter-spacing:0}
 #lobby.v4l #lv_sel .lbar{left:0;right:0;bottom:auto;top:0;height:0;z-index:3}
@@ -472,7 +474,7 @@ body.v4on #toast2{z-index:40}
   <div class="lw" style="left:2.5%;top:6%;width:250px"><div class="lwt">Characters&nbsp;<span id="lslotn" style="color:#9c917c"></span></div>
    <div class="lwb"><div class="slots" id="lslots"></div><p class="note">Up to 7 characters on this computer, each with its own gear and Adena.</p></div></div>
   <div class="lw" style="right:2.5%;top:6%;width:250px" id="linfow"><div class="lwt">Character Info</div><div class="lwb" id="linfo"></div></div>
-  <div class="stage" id="lstage_s"></div><div class="plate" id="lplate_s"></div>
+  <div class="stage" id="lstage_s"></div><div class="plate" id="lplate_s"></div><button class="lrot" id="lrotl" title="Turn left">&#9664;</button><button class="lrot" id="lrotr" title="Turn right">&#9654;</button>
   <div class="lbar"><button class="lb" id="lb_new">Create Character</button><button class="lb" id="lb_del">Delete</button><button class="lb big" id="lb_start">Start</button></div>
   <div class="lw" id="ldel" style="left:50%;top:38%;transform:translateX(-50%);width:290px;z-index:4" hidden><div class="lwt">Delete Character</div>
    <div class="lwb"><p class="desc" id="ldeltxt" style="margin:2px 2px 8px"></p><div style="display:flex;gap:6px;justify-content:center"><button class="lb" id="lb_delyes">Delete</button><button class="lb" id="lb_delno">Cancel</button></div></div></div>
@@ -1102,15 +1104,26 @@ function showLobby(view) {
   $('lslots').querySelectorAll('[data-i]').forEach(b => { b.onclick = () => { sel = +b.dataset.i; renderSel(); }; b.ondblclick = () => start(); });
   $('lslotn').textContent = `(${CH.list.length}/7)`;
   const c = CH.list[sel], has = !!c;
-  $('linfow').hidden = $('lstage_s').hidden = $('lplate_s').hidden = !has; $('lb_del').disabled = $('lb_start').disabled = !has; $('lb_new').disabled = CH.list.length >= 7;
+  $('linfow').hidden = $('lstage_s').hidden = $('lplate_s').hidden = $('lrotl').hidden = $('lrotr').hidden = !has; $('lb_del').disabled = $('lb_start').disabled = !has; $('lb_new').disabled = CH.list.length >= 7;
   if (!has) return;
   $('lplate_s').innerHTML = `${c.name}<small>${CLSN[c.cls || 'fighter']} · Lv ${c.lv || 1}</small>`; $('lstage_s').style.backgroundImage = (RINFO[c.race || 'orc'] || RINFO.orc).img;
+  view3d(c);
   $('linfo').innerHTML = `<div class="lg kv"><span>Name</span><b>${c.name}</b><span>Race</span><b>${RACEN[c.race || 'orc']}</b><span>Class</span><b>${CLSN[c.cls || 'fighter']}</b><span>Level</span><b>${c.lv || 1}</b></div>
    <div class="sec">Progress</div><div class="lg kv"><span>Furthest area</span><b>${c.runs ? AN(c.area || 1) : 'Town'}</b><span>Runs</span><b>${c.runs || 0}</b><span>Adena</span><b>${fmt(c.adena || 0)}</b><span>Created</span><b>${ago(c.created)}</b><span>Last played</span><b>${ago(c.last)}</b></div>`;
  }
  const err = n => !n ? 'Enter a name.' : !/^[A-Za-z0-9]+$/.test(n) ? 'Letters and numbers only, no spaces or symbols.' : CH.list.some(c => c.name.toLowerCase() === n.toLowerCase()) ? `${n} is already used on this computer.` : '';
  function check() { const n = $('lname').value.trim(), e = err(n), m = $('lnamemsg'); m.className = 'msg ' + (n ? (e ? 'bad' : 'good') : ''); m.textContent = n ? (e || 'Name is free.') : '';
   $('lplate_c').innerHTML = `${n && !e ? n : 'Your name'}<small>${RINFO[race].cls} · Lv 1</small>`; $('lb_make').disabled = !!e; }
+ // 10 Nov (Alex): the selected character in 3D in its own gear, turned with the arrows or by dragging (l2-viewer.js; the flat picture shows until it is ready)
+ function view3d(c) {
+  let sv = null; try { sv = JSON.parse(localStorage.getItem('l2play:' + c.name)); } catch (e) { }
+  const gear = (sv && sv.gear) || {}, items = {}; for (const id of Object.values(gear)) if (H.items[id]) items[id] = { slot: H.items[id].slot, icon: H.items[id].icon, name: H.items[id].name };
+  const go = () => window.L2VIEW && window.L2VIEW.show($('lstage_s'), { race: c.race || 'orc', gear, items });
+  if (window.L2VIEW) return go();
+  if (!view3d.p) view3d.p = new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'l2-viewer.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  view3d.p.then(() => { if (CH.list[sel] === c) go(); }).catch(() => { });
+ }
+ for (const [id, d] of [['lrotl', -1], ['lrotr', 1]]) { const b = $(id); b.onpointerdown = e => { e.preventDefault(); window.L2VIEW && window.L2VIEW.turn(d); }; b.onpointerup = b.onpointerleave = () => window.L2VIEW && window.L2VIEW.turn(0); }
  function start() { const c = CH.list[sel]; if (!c) return; CH.cur = c.name; saveCH(); musicStop(); $('lo_n').textContent = c.name; $('lo_s').textContent = 'Entering the town…'; $('loadov').classList.add('on'); setTimeout(() => { location.replace(location.pathname + location.search + '#go'); location.reload();   /* 8 Nov: keep ?query, or the reload cancels the jump and you land back in the lobby */ }, 80); }
  $('lname').oninput = check; $('lname').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter' && !$('lb_make').disabled) $('lb_make').click(); };
  $('lb_make').onclick = () => { const n = $('lname').value.trim(); if (err(n)) return; CH.list.push({ name: n, race, cls: START[race] || 'fighter', lv: 1, adena: 0, runs: 0, created: Date.now(), last: 0 }); sel = CH.list.length - 1; CH.cur = n; saveCH(); go('sel'); toast(`${n} created.`); };
