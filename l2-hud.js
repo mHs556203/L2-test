@@ -24,7 +24,7 @@ if (window.ASSETS && ASSETS.ui && H.ring) ASSETS.ui.target_decal = H.ring;
 
 const css = `
 :root{--hz:1;--acc:${ACC}}
-#status,#svstat,#target,#runtimer,#minimap,#leaverun,#bottom,#menu,#chat,#buffs,#autoplay,.win,#castbar,#bosscd{zoom:var(--hz)}
+#status,#svstat,#target,#runtimer,#minimap,#leaverun,#bottom,#menu,#chat,#buffs,#autoplay,.win,#castbar,#bosscd,#bossbar{zoom:var(--hz)}
 .l2b{background:none!important;border-style:solid!important;border-color:transparent!important;border-width:0 10px!important;border-image:${url('tab_off')} 0 16 fill / 0 10px stretch!important;color:#f3e2b0!important}.l2b:hover{border-image-source:${url('tab_on')}!important}
 #sysbar{zoom:var(--hz)}
 /* small frames: status, target, run panel */
@@ -96,7 +96,14 @@ const css = `
 /* cast bar (trials) and boss countdown */
 #castbar .cb-b{height:16px!important;background:none!important;border:0!important;border-radius:0!important;padding:3px 8px;box-sizing:border-box;border-style:solid!important;border-color:transparent!important;border-width:0 12px!important;border-image:${url('cast_bar')} 0 24 fill / 0 12px stretch!important}
 #castbar .cb-f{border-radius:2px}
-#bosscd{padding:22px 90px 26px;background:${url('boss_banner')} center/100% 100% no-repeat}
+#bosscd{padding:0;background:none}   /* 10 Nov: the banner frames the heading only; the number sits below it, clear of the rim */
+#bosscd small{display:inline-block;min-width:300px;padding:14px 64px 15px;background:${url('boss_banner')} center/100% 100% no-repeat;color:#f3e2b0}
+#bosscd b{margin-top:8px}
+/* boss HP bar (10 Nov) */
+#bossbar .bb-t{height:22px;background:none;border:0;box-shadow:none;border-style:solid;border-color:transparent;border-width:0 14px;border-image:${url('boss_bar')} 0 28 fill / 0 14px stretch}
+#bossbar .bb-f{top:4px;bottom:4px;background:linear-gradient(#c8382a,#6e120a);border-radius:2px}
+#bossbar .bb-p{font:11px/22px Tahoma,sans-serif;color:#f3ead2}
+#bossbar .bb-n{color:#f3e2b0}
 /* auto-play wheel */
 #autoplay #apFrame{visibility:hidden}
 #autoplay::before{content:'';position:absolute;left:-6px;top:18px;width:150px;height:150px;background:${url('auto_wheel')} 0 0/100% 100% no-repeat;pointer-events:none;opacity:.95}
