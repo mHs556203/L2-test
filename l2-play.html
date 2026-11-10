@@ -309,9 +309,10 @@ body.v4on #toast2{z-index:40}
 #lobby.v4l #lv_sel .lw{border:0;border-image:none;background:none}
 #lobby.v4l #lv_sel>.lw:first-child{left:44px!important;top:58px!important;width:236px!important}
 #lobby.v4l #lv_sel>.lw:first-child .lwt{height:37px;margin-left:18px;font:19px Georgia,serif;color:#f2cf86}
-#lobby.v4l #lv_sel .lwb{padding:16px 0 0}#lobby.v4l #lslots{gap:4px}
-#lobby.v4l #lslots .slot{height:34px;line-height:1.1;padding:0 12px;border-radius:5px;background:linear-gradient(180deg,#1b1719,#121012);border:1px solid rgba(255,255,255,.08);font:15px Georgia,serif}
-#lobby.v4l #lslots .slot span{font:11.5px/1.1 Tahoma,sans-serif}#lobby.v4l #lslots .slot br{display:block;content:'';margin-top:2px}
+#lobby{--sel-a:#4d0909;--sel-b:#9a1515}   /* 10 Nov: the default (draconic) skin had no selection colours in the lobby */
+#lobby.v4l #lv_sel .lwb{padding:16px 0 0}#lobby.v4l #lslots{gap:4px;background:#0e0b0d;box-shadow:0 0 0 5px #0e0b0d;border-radius:4px}   /* covers the sample row painted into the panel art */
+#lobby.v4l #lslots .slot{height:34px;line-height:1.05;padding:0 12px;border-radius:5px;background:linear-gradient(180deg,#1b1719,#121012);border:1px solid rgba(255,255,255,.08);font:15px Georgia,serif}
+#lobby.v4l #lslots .slot span{font:11.5px/1.05 Tahoma,sans-serif}#lobby.v4l #lslots .slot br{display:block;content:'';margin-top:1px}
 #lobby.v4l #lslots .slot.on{background:linear-gradient(180deg,var(--sel-b),var(--sel-a));border:1px solid var(--sel-line,#e9b65e);box-shadow:inset 0 0 0 1px var(--sel-line,#e9b65e)}
 #lobby.v4l #lslots .slot.empty{color:#8a8172;font-style:normal}
 #lobby.v4l #lv_sel .note{position:static;margin:8px 2px 0;width:auto;color:#f2cf86;font-size:11.5px;line-height:1.25;opacity:.85}
