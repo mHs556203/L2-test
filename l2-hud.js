@@ -48,7 +48,7 @@ const css = `
 #hotbar .slot.auto::before{background-image:${T('slot_sel')}}
 #hotbar .slot .fr{display:none!important}
 #hotbar .slot kbd{z-index:3}
-.hpage{color:#f3e2b0}
+.hpage,.hlab{color:#f3e2b0}
 /* side buttons */
 .hb.dk{background-size:100% 100%!important;background-repeat:no-repeat!important}
 /* soulshot / spiritshot strip */
